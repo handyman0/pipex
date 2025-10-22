@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putptr.c                                        :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelo-do <lmelo-do@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lmelo-do <lmelo-do@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/27 05:28:14 by lmelo-do          #+#    #+#             */
-/*   Updated: 2025/08/11 22:18:18 by lmelo-do         ###   ########.fr       */
+/*   Created: 2025/10/21 18:10:01 by lmelo-do          #+#    #+#             */
+/*   Updated: 2025/10/21 18:28:00 by lmelo-do         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
-int	ft_putptr(void *ptr)
-{
-	if (ptr == NULL)
-		return (ft_putstr("(nil)"));
-	return (ft_putstr("0x") + ft_puthex((unsigned long long)ptr, 0));
-}
+# include "pipex.h"
+
+void	handle_multiple_pipes(int argc, char **argv, char **envp);
+void	handle_here_doc(char **argv, char **envp);
+
+#endif
