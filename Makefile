@@ -6,7 +6,7 @@
 #    By: lmelo-do <lmelo-do@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/21 18:07:38 by lmelo-do          #+#    #+#              #
-#    Updated: 2025/10/21 20:36:38 by lmelo-do         ###   ########.fr        #
+#    Updated: 2025/10/24 16:48:05 by lmelo-do         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,14 +44,14 @@ all: libft $(NAME)
 bonus: libft $(NAME_BONUS)
 
 libft:
-	@make -C $(LIBFT_DIR)
+	@make -C $(LIBFT_DIR) -s
 
-$(NAME): $(OBJS) $(LIBFT) 
-	@$(CC) $(CFLAGS) $(OBJS) -L $(LIBFT_DIR) -lft -o $(NAME)
+$(NAME): $(OBJS) $(LIBFT)
+	@$(CC) $(CFLAGS) $(OBJS) -L $(LIBFT_DIR) -lft -o $(NAME) -s
 	@echo "$(GREEN)✅ Pipex compilado!$(RESET)"
 
 $(NAME_BONUS): $(BONUS_OBJS) $(LIBFT)
-	@$(CC) $(CFLAGS) $(BONUS_OBJS) -L $(LIBFT_DIR) -lft -o $(NAME_BONUS)
+	@$(CC) $(CFLAGS) $(BONUS_OBJS) -L $(LIBFT_DIR) -lft -o $(NAME_BONUS) -s
 	@echo "$(GREEN)✅ Pipex bonus compilado!$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
@@ -68,12 +68,12 @@ $(OBJ_BONUS_DIR):
 
 clean:
 	@$(RM) -r $(OBJ_DIR) $(OBJ_BONUS_DIR)
-	@make -C $(LIBFT_DIR) clean
+	@make -C $(LIBFT_DIR) clean -s
 	@echo "$(YELLOW)🧹 Objetos removidos$(RESET)"
 
 fclean: clean
 	@$(RM) $(NAME) $(NAME_BONUS)
-	@make -C $(LIBFT_DIR) fclean
+	@make -C $(LIBFT_DIR) fclean -s
 	@echo "$(RED)🧨 Binários removidos$(RESET)"
 
 re: fclean all
