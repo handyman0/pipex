@@ -6,7 +6,7 @@
 /*   By: lmelo-do <lmelo-do@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 18:32:16 by lmelo-do          #+#    #+#             */
-/*   Updated: 2025/10/22 14:58:11 by lmelo-do         ###   ########.fr       */
+/*   Updated: 2025/10/24 16:26:23 by lmelo-do         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,12 @@ char	*find_path(char *cmd, char **envp)
 	char	*part_path;
 
 	i = 0;
-	while (ft_strnstr(envp[i], "PATH", 4) == 0)
+	if (!envp)
+		return (NULL);
+	while (envp[i] && ft_strnstr(envp[i], "PATH", 4) == 0)
 		i++;
+	if (!envp[i])
+		return (NULL);
 	paths = ft_split(envp[i] + 5, ':');
 	i = 0;
 	while (paths[i])
@@ -30,70 +34,59 @@ char	*find_path(char *cmd, char **envp)
 		path = ft_strjoin(part_path, cmd);
 		free(part_path);
 		if (access(path, F_OK) == 0)
+		{
+			free_array(paths);
 			return (path);
+		}
 		free(path);
 		i++;
 	}
-	i = -1;
-	while (paths[++i])
-		free(paths[i]);
-	free(paths);
-	return (0);
+	free_array(paths);
+	return (NULL);
 }
 
-/* A simple error displaying function. */
 void	error(void)
 {
-	perror("\033[31mError");
+	perror("Error");
 	exit(EXIT_FAILURE);
 }
 
-/* Function that take the command and send it to find_path
- before executing it. */
 void	execute(char *argv, char **envp)
 {
 	char	**cmd;
-	int 	i;
 	char	*path;
 
-	i = -1;
 	cmd = ft_split(argv, ' ');
+	if (!cmd)
+		error();
 	path = find_path(cmd[0], envp);
 	if (!path)
 	{
-		while (cmd[++i])
-			free(cmd[i]);
-		free(cmd);
-		error();
+		free_array(cmd);
+		ft_putstr_fd("Command not found: ", 2);
+		ft_putstr_fd(argv, 2);
+		ft_putstr_fd("\n", 2);
+		exit(127);
 	}
 	if (execve(path, cmd, envp) == -1)
+	{
+		free(path);
+		free_array(cmd);
 		error();
+	}
 }
 
-/* Function that will read input from the terminal and return line. */
-int	get_next_line(char **line)
+void	free_array(char **array)
 {
-	char	*buffer;
-	int		i;
-	int		r;
-	char	c;
+	int	i;
 
+	if (!array)
+		return;
 	i = 0;
-	r = 0;
-	buffer = (char *)malloc(10000);
-	if (!buffer)
-		return (-1);
-	r = read(0, &c, 1);
-	while (r && c != '\n' && c != '\0')
+	while (array[i])
 	{
-		if (c != '\n' && c != '\0')
-			buffer[i] = c;
+		free(array[i]);
 		i++;
-		r = read(0, &c, 1);
 	}
-	buffer[i] = '\n';
-	buffer[++i] = '\0';
-	*line = buffer;
-	free(buffer);
-	return (r);
+	free(array);
 }
