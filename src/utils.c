@@ -6,18 +6,37 @@
 /*   By: lmelo-do <lmelo-do@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 18:32:16 by lmelo-do          #+#    #+#             */
-/*   Updated: 2025/10/24 16:26:23 by lmelo-do         ###   ########.fr       */
+/*   Updated: 2025/10/24 19:41:41 by lmelo-do         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-char	*find_path(char *cmd, char **envp)
+static char	*search_in_paths(char **paths, const char *cmd)
+{
+	int		i;
+	char	*part_path;
+	char	*path;
+
+	i = 0;
+	while (paths[i])
+	{
+		part_path = ft_strjoin(paths[i], "/");
+		path = ft_strjoin(part_path, cmd);
+		free(part_path);
+		if (access(path, F_OK) == 0)
+			return (path);
+		free(path);
+		i++;
+	}
+	return (NULL);
+}
+
+char	*find_path(const char *cmd, char **envp)
 {
 	char	**paths;
 	char	*path;
 	int		i;
-	char	*part_path;
 
 	i = 0;
 	if (!envp)
@@ -27,22 +46,9 @@ char	*find_path(char *cmd, char **envp)
 	if (!envp[i])
 		return (NULL);
 	paths = ft_split(envp[i] + 5, ':');
-	i = 0;
-	while (paths[i])
-	{
-		part_path = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(part_path, cmd);
-		free(part_path);
-		if (access(path, F_OK) == 0)
-		{
-			free_array(paths);
-			return (path);
-		}
-		free(path);
-		i++;
-	}
+	path = search_in_paths(paths, cmd);
 	free_array(paths);
-	return (NULL);
+	return (path);
 }
 
 void	error(void)
@@ -81,7 +87,7 @@ void	free_array(char **array)
 	int	i;
 
 	if (!array)
-		return;
+		return ;
 	i = 0;
 	while (array[i])
 	{

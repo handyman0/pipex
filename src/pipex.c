@@ -6,7 +6,7 @@
 /*   By: lmelo-do <lmelo-do@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 18:08:58 by lmelo-do          #+#    #+#             */
-/*   Updated: 2025/10/24 16:25:49 by lmelo-do         ###   ########.fr       */
+/*   Updated: 2025/10/24 19:16:31 by lmelo-do         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,33 +42,35 @@ void	parent_process(char **argv, char **envp, int *fd)
 	execute(argv[3], envp);
 }
 
-int	main(int argc, char **argv, char **envp)
+static void	init_complex(int argc, char **argv, int *fd, int *files)
 {
-	int		fd[2];
-	pid_t	pid1;
-	pid_t	pid2;
-
 	if (argc != 5)
 	{
-		ft_putstr_fd("Error: Bad arguments\n", 2);
+		ft_putstr_fd("\033[Error: Bad arguments\n\e[0m", 2);
 		ft_putstr_fd("Ex: ./pipex <file1> <cmd1> <cmd2> <file2>\n", 1);
-		return (1);
+		exit(1);
 	}
 	if (pipe(fd) == -1)
 		error();
+	files[0] = open(argv[1], O_RDONLY, 0777);
+	files[1] = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (files[0] || files[1] == -1)
+		error();
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	int		fd[2];
+	int		files[2];
+	pid_t	pid1;
+
+	init_complex(argc, argv, fd, files);
 	pid1 = fork();
 	if (pid1 == -1)
 		error();
 	if (pid1 == 0)
 		child_process(argv, envp, fd);
-	pid2 = fork();
-	if (pid2 == -1)
-		error();
-	if (pid2 == 0)
-		parent_process(argv, envp, fd);
-	close(fd[0]);
-	close(fd[1]);
 	waitpid(pid1, NULL, 0);
-	waitpid(pid2, NULL, 0);
+	parent_process(argv, envp, fd);
 	return (0);
 }
