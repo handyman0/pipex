@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelo-do <lmelo-do@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelo-do <lmelo-do@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:55:53 by lmelo-do          #+#    #+#             */
-/*   Updated: 2025/10/24 18:57:52 by lmelo-do         ###   ########.fr       */
+/*   Updated: 2025/11/11 22:41:56 by lmelo-do         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "../libft/include/libft.h"
 
 void	error(void);
-char	*find_path(char *cmd, char **envp);
+char	*find_path(const char *cmd, char **envp);
 void	execute(char *argv, char **envp);
 void	free_array(char **array);
 
